@@ -30,6 +30,9 @@
     self.tfUrlField.delegate = self;
     self.allWebViews = [[NSMutableArray alloc] initWithCapacity:0];
     
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                action:@selector(viContentDidSwipe:)];
+    [self.viContent addGestureRecognizer:swipe];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(viKeyboardMaskDidTap:)];
     [self.viKeyboardMask addGestureRecognizer:tap];
@@ -67,20 +70,35 @@
 - (void)pushWebview:(NTWebView *)webview {
     [self.allWebViews addObject:webview];
     [webview addBorderWithColor:UIColor.blackColor];
-    webview.layer.shadowRadius = 10.0;
+    webview.layer.shadowRadius = 10.0f;
     webview.layer.shadowColor = UIColor.blackColor.CGColor;
-    webview.layer.shadowOpacity = 0.8;
+    webview.layer.shadowOpacity = 0.8f;
     webview.layer.shadowOffset = CGSizeMake(10.0, 10.0);
     webview.frame = self.viContent.bounds;
     webview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.viContent addSubview:webview];
     if (self.allWebViews.count > 1) {
-        webview.alpha = 0.5;
+        webview.alpha = 0.5f;
         webview.transform = CGAffineTransformMakeScale(0.5, 0.5);
         [UIView animateWithDuration:0.3 delay:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
             webview.transform = CGAffineTransformIdentity;
-            webview.alpha = 1.0;
+            webview.alpha = 1.0f;
         } completion:nil];
+    }
+    
+    //self.updateBtnRetreatState()
+}
+
+- (void)popWebview {
+    NTWebView *webview = self.allWebViews.lastObject;
+    if (self.allWebViews.count > 1) {
+        [UIView animateWithDuration:0.3 delay:0.1 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            webview.frame = CGRectMake(self.viContent.bounds.size.width, 0, webview.frame.size.width, webview.frame.size.height);
+            webview.alpha = 0.5f;
+        } completion:^(BOOL finished){
+            [webview removeFromSuperview];
+            [self.allWebViews removeLastObject];
+        }];
     }
     
     //self.updateBtnRetreatState()
@@ -96,6 +114,10 @@
 #pragma mark - UIButton Action
 - (IBAction)viKeyboardMaskDidTap:(id)sender {
     [self.tfUrlField resignFirstResponder];
+}
+
+- (IBAction)viContentDidSwipe:(id)sender {
+    [self popWebview];
 }
 
 - (IBAction)btnGoDidClick:(id)sender {
