@@ -53,6 +53,10 @@
 
 - (void)doBrowseWithUrlString:(NSString *)strUrl {
     if (strUrl.length > 0) {
+        if (![strUrl hasPrefix:@"http://"] && ![strUrl hasPrefix:@"https://"]) {
+            strUrl = [@"https://" stringByAppendingString:strUrl];
+            self.tfUrlField.text = strUrl;
+        }
         NTWebView *webview = [[NTWebView alloc] init];
         webview.delegate = self;
         [self pushWebview:webview];
