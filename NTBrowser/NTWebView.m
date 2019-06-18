@@ -7,7 +7,6 @@
 //
 
 #import "NTWebView.h"
-#import <WebKit/WebKit.h>
 #import "Global.h"
 
 #define kEstimatedProgress @"estimatedProgress"
@@ -25,12 +24,18 @@
     [self.wkWebview removeObserver:self forKeyPath:kEstimatedProgress];
 }
 
-- (void)initWebView {
+- (void)createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration {
     
     self.viProgress = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 2)];
+    self.viProgress.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.viProgress.progressTintColor = UIColor.orangeColor;
+    self.viProgress.trackTintColor = UIColor.whiteColor;
+    self.viProgress.progress = 0.0;
     [self addSubview:self.viProgress];
     
-    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+    if (configuration == nil) {
+        configuration = [[WKWebViewConfiguration alloc] init];
+    }
     self.wkWebview = [[WKWebView alloc] initWithFrame:self.bounds configuration:configuration];
     self.wkWebview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self insertSubview:self.wkWebview belowSubview:self.viProgress];
@@ -42,11 +47,18 @@
     [self.wkWebview addObserver:self forKeyPath:kEstimatedProgress options:NSKeyValueObservingOptionNew context:nil];
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     if (self) {
-        [self initWebView];
+        [self createWebViewWithConfiguration:nil];
+    }
+    return self;
+}
+
+- (instancetype)initWithConfiguration:(WKWebViewConfiguration *)configuration {
+    self = [super init];
+    if (self) {
+        [self createWebViewWithConfiguration:configuration];
     }
     return self;
 }
@@ -54,7 +66,7 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     
-    [self initWebView];
+    [self createWebViewWithConfiguration:nil];
 }
 
 - (void)loadRequestWithUrl:(NSString *)strUrl {
@@ -80,13 +92,13 @@
 
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
     
-//    if (!navigationAction.targetFrame.isMainFrame) {
-//        let webview = WKWebView(frame: self.viBasicContent.bounds, configuration: configuration)
-//        DispatchQueue.main.async(execute: {
-//            self.pushWebview(webview)
-//        })
-//        return webview
-//    }
+    if (!navigationAction.targetFrame.isMainFrame) {
+        if ([self.delegate respondsToSelector:@selector(webviewDidPopupWebView:)]) {
+            NTWebView *webview = [[NTWebView alloc] initWithConfiguration:configuration];
+            [self.delegate webviewDidPopupWebView:webview];
+            return webview.wkWebview;
+        }
+    }
     
     return nil;
 }

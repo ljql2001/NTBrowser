@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class NTWebView;
 @protocol NTWebViewDelegate <NSObject>
-- (void)webviewDidOpenPopupWindow;
+- (void)webviewDidPopupWebView:(NTWebView *)webview;
 @end
 
 @interface NTWebView : UIView

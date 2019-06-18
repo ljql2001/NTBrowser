@@ -10,7 +10,7 @@
 #import "Global.h"
 #import "NTWebView.h"
 
-@interface ViewController ()<UITextFieldDelegate> {
+@interface ViewController ()<UITextFieldDelegate, NTWebViewDelegate> {
     
     IBOutlet UIView *viHeaderBG;
     IBOutlet UIView *viNavBar;
@@ -35,6 +35,7 @@
 - (void)doBrowseWithUrlString:(NSString *)strUrl {
     if (strUrl.length > 0) {
         NTWebView *webview = [[NTWebView alloc] init];
+        webview.delegate = self;
         [self pushWebview:webview];
         [self.allWebViews.lastObject loadRequestWithUrl:strUrl];
     }
@@ -70,6 +71,12 @@
 #pragma mark - UIButton Action
 - (IBAction)btnGoDidClick:(id)sender {
     [self doBrowseWithUrlString:tfUrlField.text];
+}
+
+#pragma mark - <NTWebViewDelegate>
+- (void)webviewDidPopupWebView:(NTWebView *)webview {
+    webview.delegate = self;
+    [self pushWebview:webview];
 }
 
 @end
