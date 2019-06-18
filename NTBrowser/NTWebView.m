@@ -15,6 +15,7 @@
 
 @property(nonatomic, retain) UIProgressView *viProgress;
 @property(nonatomic, retain) WKWebView *wkWebview;
+@property(nonatomic, retain) UIActivityIndicatorView *viIndicator;
 
 @end
 
@@ -27,7 +28,7 @@
 - (void)createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration {
     
     self.viProgress = [[UIProgressView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 2)];
-    self.viProgress.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.viProgress.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
     self.viProgress.progressTintColor = UIColor.orangeColor;
     self.viProgress.trackTintColor = UIColor.whiteColor;
     self.viProgress.progress = 0.0;
@@ -45,6 +46,13 @@
     self.wkWebview.allowsBackForwardNavigationGestures = true;
     self.wkWebview.configuration.preferences.javaScriptCanOpenWindowsAutomatically = true;
     [self.wkWebview addObserver:self forKeyPath:kEstimatedProgress options:NSKeyValueObservingOptionNew context:nil];
+    
+    self.viIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.viIndicator.bounds = CGRectMake(0, 0, 30, 30);
+    self.viIndicator.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
+    self.viIndicator.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    [self addSubview:self.viIndicator];
+    self.viIndicator.hidden = YES;
 }
 
 - (instancetype)init {
@@ -90,6 +98,7 @@
     }
 }
 
+#pragma mark - <WKUIDelegate>
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
     
     if (!navigationAction.targetFrame.isMainFrame) {
@@ -101,6 +110,33 @@
     }
     
     return nil;
+}
+
+#pragma mark - <WKNavigationDelegate>
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    
+    NSLog(@"url=%@", navigationAction.request.URL.absoluteString);
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
+    self.viIndicator.hidden = NO;
+    [self.viIndicator startAnimating];
+}
+
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error {
+    [self.viIndicator stopAnimating];
+    self.viIndicator.hidden = YES;
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error {
+    [self.viIndicator stopAnimating];
+    self.viIndicator.hidden = YES;
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
+    [self.viIndicator stopAnimating];
+    self.viIndicator.hidden = YES;
 }
 
 @end
