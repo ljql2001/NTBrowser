@@ -10,16 +10,15 @@
 #import "Global.h"
 #import "NTWebView.h"
 
-@interface ViewController ()<UITextFieldDelegate, NTWebViewDelegate> {
-    
-    IBOutlet UIView *viHeaderBG;
-    IBOutlet UIView *viNavBar;
-    IBOutlet UITextField *tfUrlField;
-    IBOutlet UIButton *btnGo;
-    IBOutlet UIView *viContent;
-}
+@interface ViewController ()<UITextFieldDelegate, NTWebViewDelegate>
 
 @property(nonatomic, retain) NSMutableArray<NTWebView *> *allWebViews;
+@property(nonatomic, assign) IBOutlet UIView *viHeaderBG;
+@property(nonatomic, assign) IBOutlet UIView *viNavBar;
+@property(nonatomic, assign) IBOutlet UITextField *tfUrlField;
+@property(nonatomic, assign) IBOutlet UIButton *btnGo;
+@property(nonatomic, assign) IBOutlet UIView *viContent;
+@property(nonatomic, assign) IBOutlet UIView *viKeyboardMask;
 
 @end
 
@@ -28,8 +27,28 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    tfUrlField.delegate = self;
+    self.tfUrlField.delegate = self;
     self.allWebViews = [[NSMutableArray alloc] initWithCapacity:0];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(viKeyboardMaskDidTap:)];
+    [self.viKeyboardMask addGestureRecognizer:tap];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(UIKeyboardWillShowNotification:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(UIKeyboardDidShowNotification:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(UIKeyboardWillHideNotification:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(UIKeyboardDidHideNotification:)
+                                                 name:UIKeyboardDidHideNotification
+                                               object:nil];
 }
 
 - (void)doBrowseWithUrlString:(NSString *)strUrl {
@@ -48,9 +67,9 @@
     webview.layer.shadowColor = UIColor.blackColor.CGColor;
     webview.layer.shadowOpacity = 0.8;
     webview.layer.shadowOffset = CGSizeMake(10.0, 10.0);
-    webview.frame = viContent.bounds;
+    webview.frame = self.viContent.bounds;
     webview.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [viContent addSubview:webview];
+    [self.viContent addSubview:webview];
     if (self.allWebViews.count > 1) {
         webview.alpha = 0.5;
         webview.transform = CGAffineTransformMakeScale(0.5, 0.5);
@@ -64,13 +83,19 @@
 }
 
 #pragma mark - <UITextFieldDelegate>
-- (void)textFieldDidEndEditing:(UITextField *)textField {
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self.tfUrlField resignFirstResponder];
     [self doBrowseWithUrlString:textField.text];
+    return YES;
 }
 
 #pragma mark - UIButton Action
+- (IBAction)viKeyboardMaskDidTap:(id)sender {
+    [self.tfUrlField resignFirstResponder];
+}
+
 - (IBAction)btnGoDidClick:(id)sender {
-    [self doBrowseWithUrlString:tfUrlField.text];
+    [self doBrowseWithUrlString:self.tfUrlField.text];
 }
 
 #pragma mark - <NTWebViewDelegate>
@@ -78,5 +103,26 @@
     webview.delegate = self;
     [self pushWebview:webview];
 }
+
+- (void)UIKeyboardWillShowNotification:(NSNotification *)notification {
+    NSLog(@"%s notification=%@", __func__, notification);
+    self.viKeyboardMask.alpha = 0.0;
+    [UIView animateWithDuration:0.3f
+                     animations:^{
+                         self.viKeyboardMask.alpha = 0.4f;
+                     } completion:nil];
+}
+
+- (void)UIKeyboardDidShowNotification:(NSNotification *)notification { }
+
+- (void)UIKeyboardWillHideNotification:(NSNotification *)notification {
+    [UIView animateWithDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
+        self.viKeyboardMask.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
+- (void)UIKeyboardDidHideNotification:(NSNotification *)notification { }
 
 @end
