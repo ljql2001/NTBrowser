@@ -16,6 +16,9 @@
 		F45BC3BA22B79C3700E99112 /* NTWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = F45BC3B822B79C3700E99112 /* NTWebView.m */; };
 		F45BC3BB22B79C3700E99112 /* NTWebView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F45BC3B922B79C3700E99112 /* NTWebView.xib */; };
 		F45BC3BE22B7A01600E99112 /* Global.m in Sources */ = {isa = PBXBuildFile; fileRef = F45BC3BD22B7A01600E99112 /* Global.m */; };
+		F48800FA22BA251E00DCC30E /* WKWebView+LongPress.m in Sources */ = {isa = PBXBuildFile; fileRef = F48800F922BA251E00DCC30E /* WKWebView+LongPress.m */; };
+		F488011222BA2C5C00DCC30E /* KSToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = F488011122BA2C5C00DCC30E /* KSToastView.m */; };
+		F488011422BA2E5600DCC30E /* WKJSFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = F488011322BA2E5600DCC30E /* WKJSFunction.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +37,11 @@
 		F45BC3B922B79C3700E99112 /* NTWebView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NTWebView.xib; sourceTree = "<group>"; };
 		F45BC3BC22B7A01600E99112 /* Global.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Global.h; sourceTree = "<group>"; };
 		F45BC3BD22B7A01600E99112 /* Global.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Global.m; sourceTree = "<group>"; };
+		F48800F822BA251D00DCC30E /* WKWebView+LongPress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WKWebView+LongPress.h"; sourceTree = "<group>"; };
+		F48800F922BA251E00DCC30E /* WKWebView+LongPress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WKWebView+LongPress.m"; sourceTree = "<group>"; };
+		F488011022BA2C5C00DCC30E /* KSToastView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KSToastView.h; sourceTree = "<group>"; };
+		F488011122BA2C5C00DCC30E /* KSToastView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KSToastView.m; sourceTree = "<group>"; };
+		F488011322BA2E5600DCC30E /* WKJSFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WKJSFunction.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +74,10 @@
 		F45BC3A022B7865700E99112 /* NTBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				F488010F22BA2C5C00DCC30E /* KSToastView */,
+				F48800F822BA251D00DCC30E /* WKWebView+LongPress.h */,
+				F48800F922BA251E00DCC30E /* WKWebView+LongPress.m */,
+				F488011322BA2E5600DCC30E /* WKJSFunction.m */,
 				F45BC3BC22B7A01600E99112 /* Global.h */,
 				F45BC3BD22B7A01600E99112 /* Global.m */,
 				F45BC3A122B7865700E99112 /* AppDelegate.h */,
@@ -82,6 +94,15 @@
 				F45BC3B922B79C3700E99112 /* NTWebView.xib */,
 			);
 			path = NTBrowser;
+			sourceTree = "<group>";
+		};
+		F488010F22BA2C5C00DCC30E /* KSToastView */ = {
+			isa = PBXGroup;
+			children = (
+				F488011022BA2C5C00DCC30E /* KSToastView.h */,
+				F488011122BA2C5C00DCC30E /* KSToastView.m */,
+			);
+			path = KSToastView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -156,9 +177,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F45BC3A622B7865700E99112 /* ViewController.m in Sources */,
+				F48800FA22BA251E00DCC30E /* WKWebView+LongPress.m in Sources */,
 				F45BC3BA22B79C3700E99112 /* NTWebView.m in Sources */,
 				F45BC3BE22B7A01600E99112 /* Global.m in Sources */,
+				F488011222BA2C5C00DCC30E /* KSToastView.m in Sources */,
 				F45BC3B122B7865800E99112 /* main.m in Sources */,
+				F488011422BA2E5600DCC30E /* WKJSFunction.m in Sources */,
 				F45BC3A322B7865700E99112 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

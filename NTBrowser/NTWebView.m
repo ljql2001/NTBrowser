@@ -8,6 +8,7 @@
 
 #import "NTWebView.h"
 #import "Global.h"
+#import "WKWebView+LongPress.h"
 
 #define kEstimatedProgress @"estimatedProgress"
 
@@ -45,6 +46,7 @@
     self.wkWebview.navigationDelegate = self;
     self.wkWebview.allowsBackForwardNavigationGestures = true;
     self.wkWebview.configuration.preferences.javaScriptCanOpenWindowsAutomatically = true;
+    [self.wkWebview addGestureRecognizerObserverWebElements:nil];
     [self.wkWebview addObserver:self forKeyPath:kEstimatedProgress options:NSKeyValueObservingOptionNew context:nil];
     
     self.viIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
